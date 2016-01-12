@@ -63,6 +63,7 @@ PROJECTNAME=>/path/to/project/folder/
 SAMPLELIST=>/path/to/sample_information_file.csv
 THREADS=>4
 Example: `rnaseq.params`_.
+.. include:: ../rnaseq/rnaseq.params
 
 Step 3: Run wrapper script::
 
@@ -95,7 +96,7 @@ Usage::
     perl convertGTF2txt.pl <path/to/file.gtf> <path/to/outdir/>
 
 .. references
-.. _rnaseq.params: http://perlbrew.pl/
+.. _rnaseq.params: https://raw.githubusercontent.com/komalsrathi/MSK_LeukGen/master/rnaseq/rnaseq.params
 .. _samples.txt: http://leukenvs.readthedocs.org/en/latest/install/bin.html#perlbrew-0-74
 
 .. attention::
