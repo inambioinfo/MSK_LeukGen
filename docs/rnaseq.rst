@@ -47,24 +47,19 @@ rnaseq.params
 This is the parameters file. It contains paths of project folder, sample information file, threads to use and such.
 
 Step 1: Make sample information file
-Format: comma separated sample information
-Extension: .csv
-Required Columns: Source_name, Species
-Optional Columns: Source_type, Cell, Tissue etc
-Source_name: Sample Name
-Species: Either Human or Mouse
-Source_type: Either Tumor or Normal
-Example: `samples.txt`_.
+*Format: comma separated sample information
+*Extension: .csv
+*Required Columns: Source_name, Species
+*Optional Columns: Source_type, Cell, Tissue etc
+*Source_name: Sample Name
+*Species: Either Human or Mouse
+*Source_type: Either Tumor or Normal
+*Example: `samples.txt`_.
 
 Step 2: Make parameters file
-Format: => separated key-value pairs
-Extension: .params
-PROJECTNAME=>/path/to/project/folder/
-SAMPLELIST=>/path/to/sample_information_file.csv
-THREADS=>4
+*Format: => separated key-value pairs
+*Extension: .params
 Example: `rnaseq.params`_.
-
-.. include:: ../rnaseq/rnaseq.params
 
 Step 3: Run wrapper script::
 
@@ -98,7 +93,7 @@ Usage::
 
 .. references
 .. _rnaseq.params: https://raw.githubusercontent.com/komalsrathi/MSK_LeukGen/master/rnaseq/rnaseq.params
-.. _samples.txt: http://leukenvs.readthedocs.org/en/latest/install/bin.html#perlbrew-0-74
+.. _samples.txt: https://raw.githubusercontent.com/komalsrathi/MSK_LeukGen/master/rnaseq/samples.txt
 
 .. attention::
 gene counts output using STAR
