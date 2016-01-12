@@ -1,3 +1,5 @@
+.. |date| date::
+
 *******************
 Usage Documentation
 *******************
