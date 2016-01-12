@@ -63,6 +63,7 @@ PROJECTNAME=>/path/to/project/folder/
 SAMPLELIST=>/path/to/sample_information_file.csv
 THREADS=>4
 Example: `rnaseq.params`_.
+
 .. include:: ../rnaseq/rnaseq.params
 
 Step 3: Run wrapper script::
