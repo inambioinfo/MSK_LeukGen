@@ -47,19 +47,21 @@ rnaseq.params
 This is the parameters file. It contains paths of project folder, sample information file, threads to use and such.
 
 Step 1: Make sample information file
-*Format: comma separated sample information
-*Extension: .csv
-*Required Columns: Source_name, Species
-*Optional Columns: Source_type, Cell, Tissue etc
-*Source_name: Sample Name
-*Species: Either Human or Mouse
-*Source_type: Either Tumor or Normal
-*Example: `samples.txt`_.
+
+* Format: comma separated sample information
+* Extension: .csv
+* Required Columns: Source_name, Species
+* Optional Columns: Source_type, Cell, Tissue etc
+* Source_name: Sample Name
+* Species: Either Human or Mouse
+* Source_type: Either Tumor or Normal
+* Example: `samples.txt`_.
 
 Step 2: Make parameters file
-*Format: => separated key-value pairs
-*Extension: .params
-Example: `rnaseq.params`_.
+
+* Format: => separated key-value pairs
+* Extension: .params
+* Example: `rnaseq.params`_.
 
 Step 3: Run wrapper script::
 
