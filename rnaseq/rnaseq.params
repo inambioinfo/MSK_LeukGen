@@ -1,0 +1,3 @@
+PROJECTNAME=>/path/to/project-dir
+SAMPLELIST=>/path/to/samples.txt
+THREADS=>4
