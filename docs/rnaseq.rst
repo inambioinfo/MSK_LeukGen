@@ -59,13 +59,17 @@ Step 1: Make sample information file
 * Source_type: Either Tumor or Normal
 * Example: `samples.txt`_.
 
-.. include:: ../rnaseq/samples.txt
+.. literalinclude:: ../rnaseq/samples.txt
+   :language: bash
 
 Step 2: Make parameters file
 
 * Format: => separated key-value pairs
 * Extension: .params
 * Example: `rnaseq.params`_.
+  
+.. literalinclude:: ../rnaseq/rnaseq.params
+   :language: bash
 
 Step 3: Run wrapper script::
 
