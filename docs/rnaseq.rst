@@ -49,13 +49,15 @@ This is the parameters file. It contains paths of project folder, sample informa
 Step 1: Make sample information file
 
 * Format: comma separated sample information
-* Extension: .csv
+* Extension: .txt
 * Required Columns: Source_name, Species
 * Optional Columns: Source_type, Cell, Tissue etc
 * Source_name: Sample Name
 * Species: Either Human or Mouse
 * Source_type: Either Tumor or Normal
 * Example: `samples.txt`_.
+
+.. include:: ../rnaseq/samples.txt
 
 Step 2: Make parameters file
 
