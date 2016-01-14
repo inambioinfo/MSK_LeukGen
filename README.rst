@@ -25,5 +25,5 @@ Welcome to **MSK_LeukGen** at luna. Here you can find scripts for RNASeq analysi
 * **cgp** contains helper scripts related to the CGP (Cancer Genome Project) pipeline. For more information, refer our `LeukGen`_ organization page. Also, refer to the documentation for this pipeline on `Confluence`_.
 
 .. references
-.. _here: https://github.com/leukgen/leukcgp
+.. _LeukGen: https://github.com/leukgen/leukcgp
 .. _Confluence: https://leukgen.atlassian.net/wiki/x/DwAu
