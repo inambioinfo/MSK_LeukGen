@@ -22,3 +22,8 @@ Welcome to **MSK_LeukGen** at luna. Here you can find scripts for RNASeq analysi
 * **bsub_tests** has a single job & array-job script to test your bsub command.
 * **gtf2txt** has scripts that convert GTF file to an easy to use tab-delimited format that can be used to annotate your results.
 * **helper_scripts** has scripts that help you change colors and themes of plots generated in R, get current logging time to add to your script outputs, get version of perl modules you are using (and more will be added).
+* **cgp** contains helper scripts related to the CGP (Cancer Genome Project) pipeline. For more information, refer our `LeukGen`_ organization page. Also, refer to the documentation for this pipeline on `Confluence`_.
+
+.. references
+.. _here: https://github.com/leukgen/leukcgp
+.. _Confluence: https://leukgen.atlassian.net/wiki/x/DwAu
