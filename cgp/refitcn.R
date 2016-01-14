@@ -7,10 +7,13 @@
 # This script takes in the chromosome, position, expected Major and Minor allele copy numbers
 # It re-calculates rho and psi and re-fits them to get a new copy number profile
 
-# get chr, pos, major and minor allele
+# get environment variables for required paths
 TMPBBG <- Sys.getenv('TMPBBG') # tmpBattenberg
 TNAME <- Sys.getenv('TNAME') # tumor name
 OUTDIR <- Sys.getenv('OUTDIR') # output dir
+PROGRESS <- Sys.getenv('PROGRESS') # progress dir
+
+# get environment variables for chr, pos, major and minor allele
 chr <- as.numeric(Sys.getenv('CHR')) # chr
 pos <- as.numeric(Sys.getenv('POS')) # pos
 ref_seg_nMajor <- as.numeric(Sys.getenv('MJA')) # major allele
@@ -41,4 +44,10 @@ cmd <- sub('Errors from command: ','',cmd)
 cmd <- paste(cmd,rho,psi) 
 
 # call the command
-system(cmd)
+exitcode <- system(cmd)
+
+# if the command runs succesfully, make a progress file
+if(exitcode==0){
+  file <- paste(PROGRESS,'/Sanger::CGP::Battenberg::Implement::battenberg_refitcn.0',sep='')
+  file.create(file=file)
+}
