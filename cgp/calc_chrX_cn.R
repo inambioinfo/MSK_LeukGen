@@ -11,6 +11,7 @@
 TNAME <- Sys.getenv('TNAME') # tumor sample name
 OUTDIR <- Sys.getenv('OUTDIR') # output dir
 is_male = Sys.getenv('SEX') # -is-male or empty
+BBGLIB <- Sys.getenv('BBGLIB') # Battenberg lib directory
 
 # determine input and output files
 input_file = paste(OUTDIR,'/',TNAME,'_mutantLogR.tab',sep='') # input file
@@ -25,7 +26,7 @@ ploidy = dat[2,2]
 cellularity = dat[2,1]
 
 # source fastPCF.R
-source('battenberg/fastPCF.R')
+source(paste(BBGLIB,'/fastPCF.R',sep=''))
 input_dir = dirname(input_file)
 
 if(is_male=="-is-male") {
