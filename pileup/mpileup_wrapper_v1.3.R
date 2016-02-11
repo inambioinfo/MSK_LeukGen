@@ -23,7 +23,7 @@ suppressMessages(library(reshape2, quietly = TRUE))
 library(optparse)
 library(getopt)
 library(plyr)
-
+library(tools)
 
 option_list = list(make_option(c("-i", "--input"), type="character",
                                help="input directory or sample file list",
@@ -36,6 +36,8 @@ option_list = list(make_option(c("-i", "--input"), type="character",
                                default = FALSE,
                                help="get a subset of the output? [default %default]",
                                metavar="logical"),
+                   make_option(c("-o","--outdir"), type="character",
+                               help="output directory path", metavar="path"),
                    make_option(c("-d", "--depth"), type="integer",
                                help="max depth [default %default]",
                                default=1000, metavar="integer"),
@@ -83,6 +85,7 @@ min_mapq <- opt$minmq
 include_insertions <- opt$insertions
 include_deletions <- opt$deletions
 getsubset <- opt$subset
+outdir <- opt$outdir
 
 # read positions file & bam files
 # read positions file & bam files
@@ -95,9 +98,11 @@ if(dir.exists(input)){
                         pattern = "*.sorted.bam$",
                         full.names = T,
                         recursive = T)
-} else if(file.exists(input)){
+} else if(file.exists(input) && file_ext(input)=="txt"){
     files <- read.table(input, comment.char = "")
     files <- as.vector(files$V1)
+} else if(file.exists(input) && file_ext(input)=="bam"){
+    files <- input
 }
 
 # read fasta reference
@@ -233,6 +238,7 @@ for(i in files){
 
     # write output
     outfile <- sub('[.]bam', '.out', sub('.*/', '', i))
+    outfile <- paste(outdir,'/',outfile,sep='')
     write.table(x = t, file = outfile, quote = F, row.names = F, sep = '\t')
 }
 
