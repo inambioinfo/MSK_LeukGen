@@ -15,6 +15,7 @@
 # writes pileup output for positions with 0 coverage
 # takes commandline parameters
 # computes counts for overlapping regions
+# allows subsetting output to get only depth
 
 timestamp()
 suppressMessages(library(Rsamtools, quietly = TRUE))
@@ -31,6 +32,10 @@ option_list = list(make_option(c("-i", "--input"), type="character",
                                help="positions file", metavar="character"),
                    make_option(c("-f", "--fasta"), type="character",
                                help="referece fasta path", metavar="path"),
+                   make_option(c("-s", "--subset"), type="logical",
+                               default = FALSE,
+                               help="get a subset of the output? [default %default]",
+                               metavar="logical"),
                    make_option(c("-d", "--depth"), type="integer",
                                help="max depth [default %default]",
                                default=1000, metavar="integer"),
@@ -77,6 +82,7 @@ min_base_quality <- opt$minbq
 min_mapq <- opt$minmq
 include_insertions <- opt$insertions
 include_deletions <- opt$deletions
+getsubset <- opt$subset
 
 # read positions file & bam files
 # read positions file & bam files
@@ -210,6 +216,9 @@ compute.pileup <- function(x){
     colnames(results) <- sub('[-]', 'reverse', colnames(results))
     colnames(results)[1:2] <- c('CHR', 'POS')
 
+    if(getsubset){
+        results <- results[,1:4]
+    }
     return(results)
 }
 
