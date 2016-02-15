@@ -4,7 +4,7 @@
 # Komal S Rathi
 # Memorial Sloan Kettering Cancer Center
 # Created ##------ Fri Nov  6 14:27:25 2015 ------ #
-# Last Modified ##------ Fri Feb 12 15:05:55 2016 ------##
+# Last Modified ##------ Mon Feb 15 17:12:17 2016 ------##
 # Usage:
 # Rscript mpileup_wrapper.R <input directory or list file> <positions_file> <reference_fasta> <max_depth> <min_base_quality> <min_mapq> <include_insertions> <include_deletions>
 # only the first three arguments are mandatory
@@ -16,6 +16,7 @@
 # takes commandline parameters
 # computes counts for overlapping regions
 # allows subsetting output to get only depth
+# adds multi threading capability
 
 timestamp()
 suppressMessages(library(Rsamtools, quietly = TRUE))
