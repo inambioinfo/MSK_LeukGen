@@ -4,7 +4,7 @@
 # Komal S Rathi
 # Memorial Sloan Kettering Cancer Center
 # Created ##------ Fri Nov  6 14:27:25 2015 ------ #
-# Last Modified ##------ Thu Feb 11 15:05:55 2016 ------##
+# Last Modified ##------ Fri Feb 12 15:05:55 2016 ------##
 # Usage:
 # Rscript mpileup_wrapper.R <input directory or list file> <positions_file> <reference_fasta> <max_depth> <min_base_quality> <min_mapq> <include_insertions> <include_deletions>
 # only the first three arguments are mandatory
@@ -24,37 +24,42 @@ suppressMessages(library(optparse, quietly = TRUE))
 suppressMessages(library(getopt, quietly = TRUE))
 suppressMessages(library(plyr, quietly = TRUE))
 suppressMessages(library(tools, quietly = TRUE))
+suppressMessages(library(doMC, quietly = TRUE))
 
-option_list = list(make_option(c("-i", "--input"), type="character",
-                               help="input directory or sample file list",
-                               metavar="character",action="store"),
-                   make_option(c("-p", "--pos"), type="character",
-                               help="positions file", metavar="character"),
-                   make_option(c("-f", "--fasta"), type="character",
-                               help="referece fasta path", metavar="path"),
-                   make_option(c("-s", "--subset"), type="logical",
+option_list = list(make_option(c("-i", "--input"), type = "character",
+                               help = "input directory, sample list file or single bam file",
+                               metavar = "path", action = "store"),
+                   make_option(c("-p", "--pos"), type = "character",
+                               help = "positions file", metavar = "path"),
+                   make_option(c("-f", "--fasta"), type = "character",
+                               help = "reference fasta", metavar = "path"),
+                   make_option(c("-s", "--subset"), type = "logical",
                                default = FALSE,
-                               help="get a subset of the output? [default %default]",
-                               metavar="logical"),
-                   make_option(c("-o","--outdir"), type="character",
-                               help="output directory path", metavar="path"),
-                   make_option(c("-d", "--depth"), type="integer",
-                               help="max depth [default %default]",
-                               default=1000, metavar="integer"),
-                   make_option(c("-bq", "--minbq"), type="integer",
-                               help="min base quality [default %default]",
-                               default=0, metavar="integer"),
-                   make_option(c("-mq", "--minmq"), type="integer",
-                               help="min mapq [default %default]",
-                               default=0, metavar="integer"),
-                   make_option(c("-ins", "--insertions"), type="logical",
-                               default=FALSE,
-                               help="include insertions? [default %default]",
-                               metavar="logical"),
-                   make_option(c("-del", "--deletions"), type="logical",
-                               default=FALSE,
-                               help="include deletions? [default %default]",
-                               metavar="logical"));
+                               help = "get a subset of the output? [default %default]",
+                               metavar = "logical"),
+                   make_option(c("-o","--outdir"), type = "character",
+                               help = "output directory path",
+                               metavar = "path"),
+                   make_option(c("-d", "--depth"), type = "integer",
+                               help = "max depth [default %default]",
+                               default = 1000, metavar = "integer"),
+                   make_option(c("-bq", "--minbq"), type = "integer",
+                               help = "min base quality [default %default]",
+                               default = 0, metavar = "integer"),
+                   make_option(c("-mq", "--minmq"), type = "integer",
+                               help = "min mapq [default %default]",
+                               default = 0, metavar = "integer"),
+                   make_option(c("-ins", "--insertions"), type = "logical",
+                               default = FALSE,
+                               help = "include insertions? [default %default]",
+                               metavar = "logical"),
+                   make_option(c("-del", "--deletions"), type = "logical",
+                               default = FALSE,
+                               help = "include deletions? [default %default]",
+                               metavar = "logical"),
+                   make_option(c("-t","--threads"), type = "integer",
+                               help = "threads to use [default %default]",
+                               default = 1, metavar = "integer"));
 
 opt_parser = OptionParser(option_list=option_list);
 opt = parse_args(opt_parser);
@@ -86,6 +91,10 @@ include_insertions <- opt$insertions
 include_deletions <- opt$deletions
 getsubset <- opt$subset
 outdir <- opt$outdir
+threads <- opt$threads
+
+# register threads for ddply to run in parallel
+registerDoMC(threads)
 
 # read positions file
 positions_file <- read.delim(positions_file, header = F)
@@ -101,10 +110,10 @@ if(dir.exists(input)){
                         pattern = "*.sorted.bam$",
                         full.names = T,
                         recursive = T)
-} else if(file.exists(input) && file_ext(input)=="txt"){
+} else if(file.exists(input) && file_ext(input) == "txt"){
     files <- read.table(input, comment.char = "")
     files <- as.vector(files$V1)
-} else if(file.exists(input) && file_ext(input)=="bam"){
+} else if(file.exists(input) && file_ext(input) == "bam"){
     files <- input
 }
 
@@ -180,11 +189,12 @@ compute.pileup <- function(x){
 
     # no pileup information so do the following:
     if(nrow(res) == 0){
-        res <- data.frame(seqnames=x$CHR,
-                          pos=x$POS,
-                          which_label=paste(x$CHR,":",x$POS,"-",x$POS,sep=''))
-        res$strand <- rep(c('-','+'), length.out=nrow(x))
-        res$nucleotide <- rep(c('A','T','G','C'), length.out=nrow(x))
+        res <- data.frame(seqnames = x$CHR,
+                          pos = x$POS,
+                          which_label = paste(x$CHR, ":", x$POS, "-", x$POS,
+                                              sep = ''))
+        res$strand <- rep(c('-','+'), length.out = nrow(x))
+        res$nucleotide <- rep(c('A','T','G','C'), length.out = nrow(x))
         res$count <- 0
         res <- res[,c(1,2,4,5,6,3)]
     }
@@ -195,15 +205,15 @@ compute.pileup <- function(x){
                  all.y = T)
 
     # factorize labels
-    res$strand <- factor(res$strand,levels=c('-','+'))
-    res$nucleotide <- factor(res$nucleotide,levels=c('A','T','G','C'))
-    res$seqnames <- factor(res$seqnames, levels=unique(res$seqnames))
+    res$strand <- factor(res$strand, levels = c('-','+'))
+    res$nucleotide <- factor(res$nucleotide, levels = c('A','T','G','C'))
+    res$seqnames <- factor(res$seqnames, levels = unique(res$seqnames))
 
     # if the input does not contain REF ALT
-    if(ncol(res)==8){
+    if(ncol(res) == 8){
         # long to wide format
         results <- dcast(res, seqnames+pos~nucleotide+strand,
-                         value.var = "count", fill = 0, drop=FALSE)
+                         value.var = "count", fill = 0, drop = FALSE)
 
         # add reference base
         results$REF <- x$REF
@@ -224,13 +234,13 @@ compute.pileup <- function(x){
                            grep('D', colnames(results)),
                            grep('[+]', colnames(results)),
                            grep('[-]', colnames(results)))]
-    } else if(ncol(res)==9){
+    } else if(ncol(res) == 9){
         res$ALT <- as.character(res$ALT)
         res$REF <- as.character(res$REF)
 
         # long to wide format
         results <- dcast(res, seqnames+pos+REF+ALT~nucleotide+strand,
-                         value.var = "count", fill = 0, drop=FALSE)
+                         value.var = "count", fill = 0, drop = FALSE)
 
         # remove columns that have NA in the name
         if(length(grep("NA$|^NA",colnames(results)))>0){
@@ -263,7 +273,8 @@ for(i in files){
     bf <- BamFile(bamfile)
 
     # for each tag call process
-    t <- ddply(.data = positions_file,.variables = 'TAG',.fun = compute.pileup)
+    t <- ddply(.data = positions_file, .variables = 'TAG',
+               .fun = compute.pileup, .parallel = TRUE)
 
     # write output
     outfile <- sub('[.]bam', '.out', sub('.*/', '', i))
