@@ -1,13 +1,12 @@
 # R wrapper script for mpileup -> nucleotide frequencies
-# mpileup_wrapper_v1.5.R
-# version: 1.5
+# mpileup_wrapper_v1.4.R
+# version: 1.4
 # Komal S Rathi
 # Memorial Sloan Kettering Cancer Center
 # Created ##------ Fri Nov  6 14:27:25 2015 ------ #
 # Last Modified ##------ Mon Feb 15 17:12:17 2016 ------##
 # Usage:
-# Rscript mpileup_wrapper.R <input directory or list file> <positions_file> <reference_fasta> <max_depth> <min_base_quality> <min_mapq> <include_insertions> <include_deletions>
-# only the first three arguments are mandatory
+# Rscript mpileup_wrapper_v1.4.R --help
 # Changes in this version:
 # takes position range as well as list of positions
 # take input directory or file with list of bam files
@@ -68,17 +67,22 @@ opt = parse_args(opt_parser);
 # get argument values
 if (is.null(opt$input)){
     print_help(opt_parser)
-    stop("Provide input file (list of bams) or input directory", call.=FALSE)
+    stop("Provide input file (list of bams) or input directory", call. = FALSE)
 }
 
 if (is.null(opt$pos)){
     print_help(opt_parser)
-    stop("Provide positions file", call.=FALSE)
+    stop("Provide positions file", call. = FALSE)
 }
 
 if (is.null(opt$fasta)){
     print_help(opt_parser)
-    stop("Provide reference fasta", call.=FALSE)
+    stop("Provide reference fasta", call. = FALSE)
+}
+
+if(is.null(opt$outdir)){
+    print_help(opt_parser)
+    stop("Provide output directory", call. = FALSE)
 }
 
 # get values of commandline args
