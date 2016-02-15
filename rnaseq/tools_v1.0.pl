@@ -9,16 +9,20 @@
 ######################
 # reference datasets #
 ######################
-$mm10Star="/ifs/depot/assemblies/M.musculus/mm10/index/star/2.4.1d/ensembl/v80/overhang74";
-$mm10fasta="/ifs/depot/assemblies/M.musculus/mm10/mm10.fasta";
-$mm10gencode="/ifs/work/leukgen/ref/mus_musculus/38/gencode/M7/gencode.vM7.annotation.gtf";
-$mm10ensembl="/ifs/work/leukgen/ref/mus_musculus/38/ensembl/80/Mus_musculus.GRCm38.80_canonical_chromosomes.gtf";
-$mm10refseq="/ifs/work/leukgen/ref/mus_musculus/38/refseq/mm10_RefSeq.bed";
+
+# human
 $hg19Star="/ifs/depot/assemblies/H.sapiens/hg19/index/star/2.4.1d/gencode/v18/overhang74";
 $hg19fasta="/ifs/depot/assemblies/H.sapiens/hg19/hg19.fasta";
 $hg19gencode="/ifs/work/leukgen/ref/homo_sapiens/37/gencode/18/gencode.v18.annotation.gtf";
 $hg19ensembl="/ifs/work/leukgen/ref/homo_sapiens/37/ensembl/75/Homo_sapiens.GRCh37.75.gtf";
 $hg19refseq="/ifs/work/leukgen/ref/homo_sapiens/37/refseq/hg19_RefSeq.bed";
+
+# mouse
+$mm10Star="/ifs/depot/assemblies/M.musculus/mm10/index/star/2.4.1d/ensembl/v80/overhang74";
+$mm10fasta="/ifs/depot/assemblies/M.musculus/mm10/mm10.fasta";
+$mm10gencode="/ifs/work/leukgen/ref/mus_musculus/38/gencode/M7/gencode.vM7.annotation.gtf";
+$mm10ensembl="/ifs/work/leukgen/ref/mus_musculus/38/ensembl/80/Mus_musculus.GRCm38.80_canonical_chromosomes.gtf";
+$mm10refseq="/ifs/work/leukgen/ref/mus_musculus/38/refseq/mm10_RefSeq.bed";
 
 ###################
 # reference tools #
