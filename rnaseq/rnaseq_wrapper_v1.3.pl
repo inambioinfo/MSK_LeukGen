@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
-# rnaseq_wrapper_v1.3.pl
-# Version: 1.3
+# rnaseq_wrapper_v1.2.pl
+# Version: 1.2
 # Author: Komal S Rathi
 # Institute: Memorial Sloan Kettering Cancer Center
 # Created: 2015-11-13_11:52:36
@@ -9,19 +9,20 @@
 # Function: This is a wrapper script for running rnaseq pipeline
 # Usage: perl rnaseq_wrapper.pl rnaseq.params
 
-# changes in v1.3
+# changes in v1.2
+# * calls rnaseqFastqInput_v1.2.pl
 # * runs project based or sample based analysis
 # * sorts merged fastq files to match read IDs
-# * takes optional output directory to store results
-# * takes either configuration file or a set of parameters
 
 # dependencies
-require('/home/rathik/scripts/getLoggingTime.pl');
 use Data::Dumper;
 use Path::Iterator::Rule;
 use File::Find::Rule;
 use Getopt::Long;
 use Pod::Usage;
+
+# default number of threads
+$threads = 1;
 
 # get commandline arguments
 GetOptions(
@@ -32,7 +33,8 @@ GetOptions(
            'p|project=s'    => \$projectname,
            's|samplelist=s' => \$samplelist,
            'c|cores=i'      => \$threads,
-           'o|output=s'     => \$output
+           'o|output=s'     => \$output,
+           'g|gtf=s'        => \$gtf
            );
            # ) or pod2usage(q(-verbose) => 1);
 pod2usage(q(-verbose) => 1) if $help;
@@ -51,7 +53,7 @@ if(!$type || ($type ne "fastq" && $type ne "bam")){
 
 # check if parameters file or alternative arguments are supplied
 if(!$paramfile){
-    if(!$projectname || !$samplelist || !$threads){
+    if(!$projectname || !$samplelist){
         print "Please enter the configuration file or projectname, samplelist and threads to use","\n";
         exit;
     } else {
@@ -76,21 +78,6 @@ if(!$analysis){
     print "Please enter the anlaysis type: sample or project","\n";
     exit;
 }
-
-# read parameters file
-# my $paramfile = $ARGV[0];
-# my $analysis = $ARGV[1];
-
-# open the file and split by =>
-# save into a hash as key & value pairs
-# open PARAM, $paramfile or die print $!;
-# my %param;
-# while(<PARAM>)
-# {
-#     chomp;
-#     my @r = split('=>');
-#     $param{$r[0]}=$r[1];
-# }
 
 # add output directory to params if specified
 if($output){
@@ -141,16 +128,16 @@ foreach (@samples)
         print "Sample directory:",$dir,"\n";
     }
 
-    if($dir){
-        # make output & log folder in sample directory
-        print "Making directories in: ",$dir,"\n";
-        $param{'OUTDIR'} = $dir.'/output';
-        $param{'LOGDIR'} = $dir.'/log';
-    } elsif($param{'OUTROOT'}){
+    if($param{'OUTROOT'}){
         # make output & log folder in specified output directory
         print "Making directories in: ",$param{'OUTROOT'},"\n";
         $param{'OUTDIR'} = $param{'OUTROOT'}.'/output';
         $param{'LOGDIR'} = $param{'OUTROOT'}.'/log';
+    } elsif($dir){
+        # make output & log folder in sample directory
+        print "Making directories in: ",$dir,"\n";
+        $param{'OUTDIR'} = $dir.'/output';
+        $param{'LOGDIR'} = $dir.'/log';
     } else {
         # make output & log folder in project directory
         print "Making directories in: ",$param{'PROJECTNAME'},"\n";
@@ -164,12 +151,12 @@ foreach (@samples)
 
     if($type eq "fastq"){
         print "Input is fastq file...\n";
-        system('bsub','-J',$samp,'-oo',"$param{'LOGDIR'}/".$samp."_".getLoggingTime().".out",'-eo',"$param{'LOGDIR'}/".$samp."_".getLoggingTime().".err",
-               'perl','/home/rathik/scripts/rnaseqFastqInput_v1.2.pl',%param,$genome,$samp);
+        system('bsub','-J',$samp,'-oo',"$param{'LOGDIR'}/".$samp.".out",'-eo',"$param{'LOGDIR'}/".$samp.".err",
+               'perl','/ifs/work/leukgen/local/opt/leuktools/development/leuktools/nested/run/perl/rnaseqFastqInput_v1.2.pl',%param,$genome,$samp,$gtf);
     } elsif($type eq "bam"){
         print "Input is bam file...\n";
-        system('bsub','-J',$samp,'-oo',"$param{'LOGDIR'}/".$samp."_".getLoggingTime().".out",'-eo',"$param{'LOGDIR'}/".$samp."_".getLoggingTime().".err",
-               'perl','/home/rathik/scripts/rnaseqBamInput_v1.2.pl',%param,$genome,$samp);
+        system('bsub','-J',$samp,'-oo',"$param{'LOGDIR'}/".$samp.".out",'-eo',"$param{'LOGDIR'}/".$samp.".err",
+               'perl','/ifs/work/leukgen/local/opt/leuktools/development/leuktools/nested/run/perl/rnaseqBamInput_v1.2.pl',%param,$genome,$samp,$gtf);
     } else {
         print "Please enter a valid value: 1 for Fastq input and 2 for BAM input...\n";
         print "Exiting program...\n";

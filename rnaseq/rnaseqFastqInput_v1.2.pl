@@ -86,7 +86,7 @@ print $mergeR2,"\n";
 
 # sort R1 and R2
 print "\nSorting fastq files...\n";
-my $sortfastq = "$pairfq makepairs -c gzip -f $param{'OUTDIR'}/".$sample."_".$version."*_R1.fastq.gz -r $param{'OUTDIR'}/".$sample."_".$version."*_R2.fastq.gz -fp $param{'OUTDIR'}/".$sample."_".$version."_".getLoggingTime()."_sorted_R1.fastq -rp $param{'OUTDIR'}/".$sample."_".$version."_".getLoggingTime()."_sorted_R2.fastq -fs $param{'OUTDIR'}/forwards.fastq -rs $param{'OUTDIR'}/reverses.fastq";
+my $sortfastq = "$pairfq makepairs -c gzip -f $param{'OUTDIR'}/".$sample."_".$version."*_R1.fastq.gz -r $param{'OUTDIR'}/".$sample."_".$version."*_R2.fastq.gz -fp $param{'OUTDIR'}/".$sample."_".$version."_".getLoggingTime()."_sorted_R1.fastq -rp $param{'OUTDIR'}/".$sample."_".$version."_".getLoggingTime()."_sorted_R2.fastq -fs $param{'OUTDIR'}/".$sample."_forwards.fastq -rs $param{'OUTDIR'}/".$sample."_reverses.fastq";
 print $sortfastq,"\n";
 # system($sortfastq);
 
