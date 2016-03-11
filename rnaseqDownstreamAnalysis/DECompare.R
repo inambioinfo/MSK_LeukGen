@@ -1,8 +1,8 @@
 require(DESeq)
 require(data.table)
 DECompare <- function(counts,groupA,groupB,conditions,sample.info,annotation){
-  countsBuffer = counts[,match(colnames(counts),sample.info$Source_name)]
-  condsBuffer = sample.info$Source_type
+  countsBuffer = counts[,match(colnames(counts),sample.info$source_name)]
+  condsBuffer = sample.info$source_type
   cds <- newCountDataSet( countsBuffer, condsBuffer )
   cds <- estimateSizeFactors( cds )
   cds <- estimateDispersions( cds, method= 'pooled', sharingMode='maximum', fitType='local')

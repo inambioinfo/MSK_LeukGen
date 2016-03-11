@@ -20,15 +20,15 @@ makeHeatmap <- function(results,normCounts,sample.info,title,n){
   annotation_row <- data.frame(Chr=results$Chr,Biotype=results$Biotype) 
   rownames(annotation_row) <- results$Symbol
   
-  results <- results[,colnames(results) %in% sample.info$Source_name | colnames(results)=='Symbol']
+  results <- results[,colnames(results) %in% sample.info$source_name | colnames(results)=='Symbol']
 
   # make gene symbols as row names
   rownames(results) <- results$Symbol
   results <- results[,-1]
   
   # annotation column
-  annotation_col <- data.frame(Source_type=sample.info$Source_type)
-  rownames(annotation_col) <- sample.info$Source_name
+  annotation_col <- data.frame(source_type=sample.info$source_type)
+  rownames(annotation_col) <- sample.info$source_name
   
   title <- paste(title,'n = ',n,sep='')
   p <- pheatmap(results, display_numbers = F, scale = 'row',clustering_distance_rows = 'correlation',clustering_distance_cols='correlation',

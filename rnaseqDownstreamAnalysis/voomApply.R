@@ -1,7 +1,7 @@
 library(edgeR)
 voomApply <- function(counts,groupA,groupB,conditions,sample.info){
-  countsBuffer = counts[,match(colnames(counts),sample.info$Source_name)]
-  condsBuffer = sample.info$Source_type
+  countsBuffer = counts[,match(colnames(counts),sample.info$source_name)]
+  condsBuffer = sample.info$source_type
   groups = as.factor(condsBuffer)
   designCombined <- model.matrix(~0+groups)
   colnames(designCombined) = levels(groups)
