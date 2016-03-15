@@ -72,37 +72,37 @@ for(i in 1:nrow(conf)){
   groupA <- conf[i,1]
   groupB <- conf[i,2]
   print(paste(groupA,"vs",groupB))
-  
+
   # perform normalization
   normCounts <- voomApply(counts = dat, groupA = groupA, groupB = groupB, conditions = condition, sample.info = sample.info)
   normCounts <- normCounts - min(normCounts)
-  
+
   # add pseudo counts to normalized counts i.e. smallest non-zero count in each library
   # log2 transform
-  
+
   # generate correlation plot of the normalized samples
   corrplot <- makeCorrPlot(normCounts = normCounts)
-  
+
   # generate PCA of samples
   pca <- makePCA(normCounts = normCounts, sample.info = sample.info, m=10)
-  
+
   # generate boxplot of samples
   boxplot <- makeBoxplot(normCounts = normCounts, sample.info = sample.info)
-  
+
   # compute differential gene expression
   res.limma <- limmaApply(normCounts = normCounts, groupA = groupA, groupB = groupB, conditions = condition, sample.info = sample.info, annotation = annotation)
   output <- paste(input_dir,paste(groupA,"vs",groupB,'VoomLimma_results.csv',sep = '_'),sep='/')
   write.csv(res.limma, output, quote=F, row.names = F)
-  
+
   res.deseq <- DECompare(counts = dat, groupA = groupA, groupB = groupB, conditions = condition, sample.info = sample.info, annotation = annotation)
   output <- paste(input_dir,paste(groupA,"vs",groupB,'DESeq_results.csv',sep = '_'),sep='/')
   write.csv(res.deseq, output, quote=F, row.names = F)
-  
+
   # p-value distribution P-value vs. Frequency
-  
+
   # generate heatmap
   heatmap <- makeHeatmap(results = res.limma, normCounts = normCounts, sample.info = sample.info, title = 'Top Differentially Expressed Genes\n', n = 50)
-  
+
   # output results
   output <- paste(input_dir,paste(groupA,"vs",groupB,'DGE_summary_report.pdf',sep = '_'),sep='/')
   text <- paste('Plots:',groupA,'vs',groupB,sep=' ')

@@ -12,7 +12,7 @@ makePCA <- function(normCounts, sample.info, m){
   var <- data.frame(var = var[1:n])
   var <- dat[rownames(normCounts) %in% rownames(var),]
   pca <- prcomp(t(var))
-  scores <- data.frame(source_type = sample.info$source_type, source_name = row.names(pca$x), pca$x)
+  scores <- data.frame(source_type = sample.info$source_condition, source_name = row.names(pca$x), pca$x)
   tmp <- summary(pca)
   
   pc1 <- round(tmp$importance[2,1]*100,2)

@@ -1,14 +1,19 @@
-limmaApply <- function(normCounts,groupA,groupB,conditions,sample.info,annotation){
+limmaApply <- function(normCounts,groupA,groupB,sample.info,annotation){
   countsBuffer = normCounts[,match(colnames(normCounts),sample.info$source_name)]
-  condsBuffer = sample.info$source_type
+  condsBuffer = sample.info$source_condition
   groups = as.factor(condsBuffer)
   designCombined <- model.matrix(~0+groups)
   colnames(designCombined) = levels(groups)
   
   # differential expression using limma
   fit <- lmFit(countsBuffer, design =  designCombined)
-  # cont.matrix <- makeContrasts(grp = groupA-groupB, levels = designCombined)
+  
+  # change groups to fit the model
+  groupA <- paste('(',groupA,')',sep = '')
+  groupB <- paste('(',groupB,')',sep = '')
+  
   cont.matrix <- makeContrasts(grp = noquote(paste(groupA,"-",groupB,sep='')), levels = designCombined)
+  print(cont.matrix)
   fit2 <- contrasts.fit(fit, cont.matrix)
   fit2 <- eBayes(fit2)
   res <- topTable(fit2, coef = 1, number = Inf, p.value = 1, adjust.method = "BH")

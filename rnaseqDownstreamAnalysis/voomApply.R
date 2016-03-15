@@ -1,13 +1,12 @@
 library(edgeR)
-voomApply <- function(counts,groupA,groupB,conditions,sample.info){
+voomApply <- function(counts, sample.info){
   countsBuffer = counts[,match(colnames(counts),sample.info$source_name)]
-  condsBuffer = sample.info$source_type
+  condsBuffer = sample.info$source_condition
   groups = as.factor(condsBuffer)
   designCombined <- model.matrix(~0+groups)
   colnames(designCombined) = levels(groups)
   nf <- calcNormFactors(countsBuffer)
-  print(nf)
-  datCombined <- voom(countsBuffer, designCombined, plot=T, lib.size=colSums(countsBuffer) * nf)
+  datCombined <- voom(countsBuffer, designCombined, lib.size=colSums(countsBuffer) * nf, plot=FALSE)
   # datCombined <- voom(countsBuffer, designCombined, plot=FALSE)
   return(datCombined$E)
 }

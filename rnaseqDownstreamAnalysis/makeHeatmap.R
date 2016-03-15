@@ -27,7 +27,7 @@ makeHeatmap <- function(results,normCounts,sample.info,title,n){
   results <- results[,-1]
   
   # annotation column
-  annotation_col <- data.frame(source_type=sample.info$source_type)
+  annotation_col <- data.frame(source_type=sample.info$source_condition)
   rownames(annotation_col) <- sample.info$source_name
   
   title <- paste(title,'n = ',n,sep='')

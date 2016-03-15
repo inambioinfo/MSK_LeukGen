@@ -10,13 +10,16 @@ make.gct <- function(normCounts,annotation,sample.info,limmaout,test){
   }
   
   # get the expression values & symbols
-  nr <- nrow(normCounts)
+  # nr <- nrow(normCounts)
   nsample <- ncol(normCounts)
   annotation$DESCRIPTION <- 'na'
   gct <- merge(annotation, normCounts, by.x='ID', by.y='row.names')
-  gct <- gct[,colnames(gct) %in% sample.info$Source_name | colnames(gct)=='DESCRIPTION' | colnames(gct)=='Symbol']
+  gct <- gct[-which(duplicated(gct$Symbol)),]
+  nr <- nrow(gct)
+  gct <- gct[,colnames(gct) %in% sample.info$source_name | colnames(gct)=='DESCRIPTION' | colnames(gct)=='Symbol']
   gct$Symbol <- toupper(gct$Symbol)
   colnames(gct)[1] <- c('NAME')
+  
   
   # make the initial part before expression values 
   dt <- matrix('',ncol=2+nsample,nrow = 3)
