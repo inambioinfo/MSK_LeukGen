@@ -1,4 +1,5 @@
-library(edgeR)
+suppressMessages(library(edgeR, quietly = TRUE))
+
 voomApply <- function(counts, sample.info){
   countsBuffer = counts[,match(colnames(counts),sample.info$source_name)]
   condsBuffer = sample.info$source_condition
